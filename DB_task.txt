@@ -1,0 +1,22 @@
+1. 
+docker pull postgres
+docker run --name postgre_base -e POSTGRES_PASSWORD=rootroot -d postgres
+docker exec -it postgre_base psql -U postgres
+2.
+CREATE DATABASE academy
+ \c academy
+3.
+CREATE TABLE Students (s_id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL, start_year INT NOT NULL);
+CREATE TABLE Courses (c_no SERIAL PRIMARY KEY, title VARCHAR(255) NOT NULL, hours INT);
+CREATE TABLE Exams (s_id INT REFERENCES Students (s_id), c_no INT REFERENCES Courses (c_no), score INT NOT NULL);
+4.
+INSERT INTO Students (name, start_year) VALUES ('Ivanov Ivan', 2004), ('Sidorov Petr', 2005), ('Smirnov Vasja'
+,2006), ('Petrov Fedya', 2006);
+INSERT INTO courses (title , hours) VALUES ('math', 34), ('tech', 56), ('russ', 89), ('Geography', 23);
+INSERT INTO Exams (s_id, c_id, score) VALUES (1, 3, 4), (1,2,5), (2,1,3), (4,2,2), (2,4,4);
+5.
+SELECT name FROM students LEFT JOIN exams ON students.s_id = exams.s_id WHERE exams.score IS NULL;
+6.
+SELECT name, COUNT(*) AS count_exams FROM students JOIN exams ON students.s_id = exams.s_id GROUP BY name;
+7.
+SELECT courses.title, CAST(AVG(exams.score) as decimal(2,1)) AS score_average FROM exams JOIN courses ON courses.c_no = exams.c_no GROUP BY exams.c_no, courses.title ORDER BY score_average desc;
